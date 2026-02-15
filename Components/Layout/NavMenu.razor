@@ -1,0 +1,60 @@
+﻿@implements IDisposable
+@inject ThemeService Theme
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="">
+            <i class="bi bi-journal-bookmark-fill me-2"></i>
+            <span>RecipeWeb</span>
+        </a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable d-flex flex-column justify-content-between" style="height: calc(100vh - 3.5rem);" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex align-items-center" href="" Match="NavLinkMatch.All">
+                <i class="bi bi-house-door-fill me-3" aria-hidden="true"></i>
+                <span>Home</span>
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex align-items-center" href="search">
+                <i class="bi bi-search me-3" aria-hidden="true"></i>
+                <span>Search</span>
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link d-flex align-items-center" href="add">
+                <i class="bi bi-plus-circle-fill me-3" aria-hidden="true"></i>
+                <span>Add New</span>
+            </NavLink>
+        </div>
+
+    </nav>
+
+    <div class="nav-item px-3 pb-4">
+        <button class="btn btn-link nav-link w-100 d-flex align-items-center border-0" @onclick="Theme.ToggleTheme" @onclick:stopPropagation>
+            @if (Theme.IsDarkMode)
+            {
+                <i class="bi bi-sun-fill me-3 text-warning" aria-hidden="true"></i>
+                <span>Light Mode</span>
+            }
+            else
+            {
+                <i class="bi bi-moon-stars-fill me-3" aria-hidden="true"></i>
+                <span>Dark Mode</span>
+            }
+        </button>
+    </div>
+</div>
+
+@code {
+    protected override void OnInitialized() => Theme.OnThemeChanged += StateHasChanged;
+    public void Dispose() => Theme.OnThemeChanged -= StateHasChanged;
+}

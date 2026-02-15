@@ -1,0 +1,67 @@
+﻿@page "/"
+@inject RecipeService Service
+@inject NavigationManager Nav
+
+<div class="home-container">
+    @* --- HERO SECTION --- *@
+    <div class="hero-section text-center py-5 mb-4">
+        <h1 class="display-4 fw-bold">🍲 My Digital Cookbook</h1>
+        <p class="lead">Organize, search, and discover your favorite meals in one place.</p>
+        <div class="mt-4">
+            <button class="btn btn-primary btn-lg me-2" @onclick='() => Nav.NavigateTo("/add")'>
+                <span class="bi bi-plus-circle"></span> Add New Recipe
+            </button>
+            <button class="btn btn-outline-secondary btn-lg" @onclick='() => Nav.NavigateTo("/search")'>
+                <span class="bi bi-search"></span> Browse All
+            </button>
+        </div>
+    </div>
+
+    @* --- DASHBOARD STATS --- *@
+    <div class="row text-center mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h3>@Service.GetAll().Count</h3>
+                <p class="text-muted mb-0">Total Recipes</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h3>@Service.GetAll().SelectMany(r => r.Ingredients).Distinct().Count()</h3>
+                <p class="text-muted mb-0">Unique Ingredients</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-3">
+                <h3>@DateTime.Now.ToString("MMMM yyyy")</h3>
+                <p class="text-muted mb-0">Current Month</p>
+            </div>
+        </div>
+    </div>
+
+    @* --- RECENT ACTIVITY / FEATURED --- *@
+    <div class="recent-section">
+        <h4 class="mb-3">Latest Creation</h4>
+        @if (Service.GetAll().Any())
+        {
+            var latest = Service.GetAll().Last();
+            <div class="card featured-card shadow-sm" @onclick='() => Nav.NavigateTo("/search")' style="cursor: pointer;">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">@latest.Name</h5>
+                    <p class="card-text">@string.Join(", ", latest.Ingredients.Take(5))...</p>
+                    <small class="text-muted">Click to view in search results</small>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                You haven't added any recipes yet! Click the button above to get started.
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    // Logic is handled via the injected RecipeService
+}

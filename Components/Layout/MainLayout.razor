@@ -1,0 +1,53 @@
+﻿@inherits LayoutComponentBase
+@inject ThemeService Theme
+@implements IDisposable
+
+@* The Theme.GetThemeClass() applies 'light-mode' or 'dark-mode' to the entire app.
+   This allows our CSS variables in app.css to control all colors.
+*@
+<div class="page @Theme.GetThemeClass()">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+    @* A simple header bar that moves content down *@
+    <div style="height: 50px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px;">
+        <h5 style="padding: 10px 25px; margin: 0; opacity: 0.6;">Recipe Manager</h5>
+    </div>
+
+    <article class="content px-4">
+        @Body
+    </article>
+</main>
+</div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // When the app first loads in the browser, check LocalStorage for theme preference.
+            await Theme.InitializeTheme();
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        // Subscribe to the ThemeService event so this layout refreshes when the toggle is clicked.
+        Theme.OnThemeChanged += UpdateUI;
+    }
+
+    private void UpdateUI()
+    {
+        // Forces the UI to re-render with the new CSS class.
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from the event when the layout is destroyed to keep memory clean.
+        Theme.OnThemeChanged -= UpdateUI;
+    }
+}

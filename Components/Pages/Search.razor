@@ -1,0 +1,129 @@
+@page "/search"
+@inject RecipeService Service
+
+<style>
+    /* This creates the blur effect on the background when the modal is open */
+    .modal-backdrop-blur {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        z-index: 1040;
+    }
+    .custom-modal {
+        z-index: 1050;
+        display: block;
+    }
+</style>
+
+<h3>🔍 Search Recipes</h3>
+
+<div class="mb-4">
+    <input @bind="query" @bind:event="oninput" class="form-control" placeholder="Search by name or ingredient..." />
+</div>
+
+<div class="row">
+    @foreach (var r in Service.GetAll().Where(x => x.Name.Contains(query, StringComparison.OrdinalIgnoreCase)))
+    {
+        <div class="col-md-4 mb-3">
+            @* The @onclick here is what triggers the pop-up *@
+            <div class="card h-100 shadow-sm" style="cursor: pointer;" @onclick="() => OpenRecipe(r)">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">@r.Name</h5>
+                    <p class="card-text text-muted">@string.Join(", ", r.Ingredients.Take(3))...</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (selectedRecipe != null)
+{
+    @* Manual Backdrop to ensure blur and click-to-close works *@
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1040;" 
+         @onclick="CloseRecipe"></div>
+
+    @* The Modal Window *@
+    <div class="modal show" style="display: block; z-index: 1050;" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title">@(isEditMode ? "Editing..." : selectedRecipe.Name)</h5>
+                    <button type="button" class="btn-close" @onclick="CloseRecipe"></button>
+                </div>
+                <div class="modal-body">
+                    @if (!isEditMode)
+                    {
+                        <h6>Ingredients:</h6>
+                        <p>@string.Join(", ", selectedRecipe.Ingredients)</p>
+                        <hr />
+                        <h6>Instructions:</h6>
+                        <p>@selectedRecipe.Instructions</p>
+                    }
+                    else
+                    {
+                        <input @bind="editName" class="form-control mb-2" />
+                        <input @bind="editIngredients" class="form-control mb-2" />
+                        <textarea @bind="editInstructions" class="form-control" rows="4"></textarea>
+                    }
+                </div>
+                <div class="modal-footer">
+                    @if (!isEditMode)
+                    {
+                        <button class="btn btn-outline-danger me-auto" @onclick="Delete">Delete</button>
+                        <button class="btn btn-primary" @onclick="EnterEditMode">Edit</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-success" @onclick="Save">Save</button>
+                        <button class="btn btn-link" @onclick="() => isEditMode = false">Cancel</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string query = "";
+    private Recipe? selectedRecipe;
+    private bool isEditMode = false;
+
+    private string editName = "";
+    private string editIngredients = "";
+    private string editInstructions = "";
+
+    private void OpenRecipe(Recipe r)
+    {
+        selectedRecipe = r;
+        isEditMode = false;
+    }
+
+    private void EnterEditMode()
+    {
+        editName = selectedRecipe!.Name;
+        editIngredients = string.Join(", ", selectedRecipe.Ingredients);
+        editInstructions = selectedRecipe.Instructions;
+        isEditMode = true;
+    }
+
+    private void Save()
+    {
+        var updated = new Recipe(editName, editIngredients.Split(',').Select(i => i.Trim()).ToList(), editInstructions);
+        Service.UpdateRecipe(selectedRecipe!, updated);
+        selectedRecipe = updated;
+        isEditMode = false;
+    }
+
+    private void Delete()
+    {
+        Service.DeleteRecipe(selectedRecipe!);
+        CloseRecipe();
+    }
+
+    private void CloseRecipe() => selectedRecipe = null;
+}

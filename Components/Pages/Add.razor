@@ -1,0 +1,37 @@
+@page "/add"
+@inject RecipeService Service
+@inject NavigationManager Nav
+
+<h3>➕ Add a New Recipe</h3>
+
+<div class="card p-4 shadow-sm" style="max-width: 500px;">
+    <div class="mb-3">
+        <label>Recipe Name</label>
+        <input @bind="newName" class="form-control" placeholder="e.g. Grandma's Pasta" />
+    </div>
+    <div class="mb-3">
+        <label>Ingredients (comma separated)</label>
+        <input @bind="newIngredients" class="form-control" placeholder="Eggs, Flour, Water" />
+    </div>
+    <div class="mb-3">
+        <label>Instructions</label>
+        <textarea @bind="newInstructions" class="form-control" rows="4"></textarea>
+    </div>
+    <button class="btn btn-success" @onclick="Save">Save and View All</button>
+</div>
+
+@code {
+    private string newName = "";
+    private string newIngredients = "";
+    private string newInstructions = "";
+
+    private void Save()
+    {
+        if (!string.IsNullOrWhiteSpace(newName))
+        {
+            var list = newIngredients.Split(',').Select(i => i.Trim()).ToList();
+            Service.Add(new Recipe(newName, list, newInstructions));
+            Nav.NavigateTo("/"); // Redirects back to the home list after saving
+        }
+    }
+}
