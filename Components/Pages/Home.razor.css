@@ -1,0 +1,98 @@
+.hero {
+	display: grid;
+	gap: 0.7rem;
+	padding: 1.4rem;
+	border-radius: 18px;
+	border: 1px solid var(--line);
+	background: var(--panel);
+}
+
+.hero h1 {
+	font-size: 1.9rem;
+	line-height: 1.1;
+}
+
+.hero p {
+	color: var(--mute);
+}
+
+.heroactions {
+	display: flex;
+	gap: 0.6rem;
+	flex-wrap: wrap;
+}
+
+.homegrid {
+	margin-top: 1rem;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.75rem;
+}
+
+.stat {
+	display: grid;
+	gap: 0.35rem;
+}
+
+.key {
+	font-size: 0.75rem;
+	font-weight: 700;
+	color: var(--mute);
+	text-transform: lowercase;
+}
+
+.num {
+	font-size: 1.45rem;
+	font-weight: 800;
+	line-height: 1;
+}
+
+.latest {
+	margin-top: 1.15rem;
+	display: grid;
+	gap: 0.65rem;
+}
+
+.head h2 {
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.pick {
+	display: grid;
+	gap: 0.35rem;
+	width: 100%;
+	text-align: left;
+	border: 1px solid var(--line);
+	cursor: pointer;
+}
+
+.title {
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.meta {
+	color: var(--mute);
+}
+
+.empty {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.7rem;
+}
+
+@media (max-width: 900px) {
+	.hero {
+		padding: 1rem;
+	}
+
+	.hero h1 {
+		font-size: 1.4rem;
+	}
+
+	.homegrid {
+		grid-template-columns: 1fr;
+	}
+}

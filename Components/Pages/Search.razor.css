@@ -1,0 +1,115 @@
+.searchbar {
+	margin-top: 0.65rem;
+}
+
+.searchgrid {
+	margin-top: 0.85rem;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.75rem;
+}
+
+.tile {
+	display: grid;
+	gap: 0.35rem;
+	width: 100%;
+	text-align: left;
+	border: 1px solid var(--line);
+	cursor: pointer;
+}
+
+.tilename {
+	font-weight: 700;
+}
+
+.tilemeta {
+	color: var(--mute);
+}
+
+.searchempty {
+	margin-top: 0.85rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.7rem;
+}
+
+.mask {
+	position: fixed;
+	inset: 0;
+	background: rgba(8, 10, 15, 0.45);
+	z-index: 40;
+}
+
+.modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: min(520px, calc(100vw - 1.2rem));
+	border: 1px solid var(--line);
+	border-radius: 16px;
+	background: var(--panel);
+	z-index: 50;
+}
+
+.modalhead,
+.modalfoot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.8rem 0.95rem;
+	border-bottom: 1px solid var(--line);
+}
+
+.modalhead p {
+	font-weight: 700;
+}
+
+.modalbody {
+	padding: 0.95rem;
+	display: grid;
+	gap: 0.7rem;
+}
+
+.copy {
+	line-height: 1.5;
+}
+
+.modalfoot {
+	border-bottom: 0;
+	border-top: 1px solid var(--line);
+	justify-content: flex-end;
+	gap: 0.45rem;
+	flex-wrap: wrap;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.9rem;
+	height: 1.9rem;
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	background: var(--panel);
+	color: var(--text);
+	cursor: pointer;
+}
+
+.field {
+	display: grid;
+	gap: 0.38rem;
+}
+
+.field span {
+	font-size: 0.75rem;
+	font-weight: 700;
+	color: var(--mute);
+}
+
+@media (max-width: 900px) {
+	.searchgrid {
+		grid-template-columns: 1fr;
+	}
+}

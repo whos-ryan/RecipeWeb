@@ -2,36 +2,47 @@
 @inject RecipeService Service
 @inject NavigationManager Nav
 
-<h3>➕ Add a New Recipe</h3>
+<h1 class="title">add</h1>
 
-<div class="card p-4 shadow-sm" style="max-width: 500px;">
-    <div class="mb-3">
-        <label>Recipe Name</label>
-        <input @bind="newName" class="form-control" placeholder="e.g. Grandma's Pasta" />
-    </div>
-    <div class="mb-3">
-        <label>Ingredients (comma separated)</label>
-        <input @bind="newIngredients" class="form-control" placeholder="Eggs, Flour, Water" />
-    </div>
-    <div class="mb-3">
-        <label>Instructions</label>
-        <textarea @bind="newInstructions" class="form-control" rows="4"></textarea>
-    </div>
-    <button class="btn btn-success" @onclick="Save">Save and View All</button>
-</div>
+<section class="card form">
+	<label class="field">
+		<span>name</span>
+		<input @bind="name" />
+	</label>
+	<label class="field">
+		<span>ingredients</span>
+		<input @bind="items" />
+	</label>
+	<label class="field">
+		<span>steps</span>
+		<textarea @bind="steps" rows="5"></textarea>
+	</label>
+	@if (warn)
+	{
+		<p class="warn">required</p>
+	}
+	<div class="actions">
+		<button class="button" @onclick='() => Nav.NavigateTo("/")'>cancel</button>
+		<button class="button primary" @onclick="Save">save</button>
+	</div>
+</section>
 
 @code {
-    private string newName = "";
-    private string newIngredients = "";
-    private string newInstructions = "";
+	private string name = "";
+	private string items = "";
+	private string steps = "";
+	private bool warn;
 
-    private void Save()
-    {
-        if (!string.IsNullOrWhiteSpace(newName))
-        {
-            var list = newIngredients.Split(',').Select(i => i.Trim()).ToList();
-            Service.Add(new Recipe(newName, list, newInstructions));
-            Nav.NavigateTo("/"); // Redirects back to the home list after saving
-        }
-    }
+	private void Save()
+	{
+		if (string.IsNullOrWhiteSpace(name))
+		{
+			warn = true;
+			return;
+		}
+
+		var list = items.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
+		Service.Add(new Recipe(name.Trim(), list, steps.Trim()));
+		Nav.NavigateTo("/");
+	}
 }
