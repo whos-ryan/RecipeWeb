@@ -1,129 +1,182 @@
 @page "/search"
 @inject RecipeService Service
 
-<style>
-    /* This creates the blur effect on the background when the modal is open */
-    .modal-backdrop-blur {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(8px);
-        z-index: 1040;
-    }
-    .custom-modal {
-        z-index: 1050;
-        display: block;
-    }
-</style>
+<h1 class="title">search</h1>
 
-<h3>🔍 Search Recipes</h3>
-
-<div class="mb-4">
-    <input @bind="query" @bind:event="oninput" class="form-control" placeholder="Search by name or ingredient..." />
+<div class="searchbar">
+	<input @bind="text" @bind:event="oninput" placeholder="find" />
 </div>
 
-<div class="row">
-    @foreach (var r in Service.GetAll().Where(x => x.Name.Contains(query, StringComparison.OrdinalIgnoreCase)))
-    {
-        <div class="col-md-4 mb-3">
-            @* The @onclick here is what triggers the pop-up *@
-            <div class="card h-100 shadow-sm" style="cursor: pointer;" @onclick="() => OpenRecipe(r)">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">@r.Name</h5>
-                    <p class="card-text text-muted">@string.Join(", ", r.Ingredients.Take(3))...</p>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
-@if (selectedRecipe != null)
+@if (list.Count == 0)
 {
-    @* Manual Backdrop to ensure blur and click-to-close works *@
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1040;" 
-         @onclick="CloseRecipe"></div>
+	<div class="card searchempty">
+		<p>empty</p>
+		<a class="button primary" href="/add">add</a>
+	</div>
+}
+else
+{
+	<div class="searchgrid">
+		@foreach (var item in list)
+		{
+			<button class="card tile" @onclick="() => Open(item)">
+				<p class="tilename">@item.Name</p>
+				<p class="tilemeta">@string.Join(", ", item.Ingredients.Take(4))</p>
+			</button>
+		}
+	</div>
+}
 
-    @* The Modal Window *@
-    <div class="modal show" style="display: block; z-index: 1050;" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg">
-                <div class="modal-header">
-                    <h5 class="modal-title">@(isEditMode ? "Editing..." : selectedRecipe.Name)</h5>
-                    <button type="button" class="btn-close" @onclick="CloseRecipe"></button>
-                </div>
-                <div class="modal-body">
-                    @if (!isEditMode)
-                    {
-                        <h6>Ingredients:</h6>
-                        <p>@string.Join(", ", selectedRecipe.Ingredients)</p>
-                        <hr />
-                        <h6>Instructions:</h6>
-                        <p>@selectedRecipe.Instructions</p>
-                    }
-                    else
-                    {
-                        <input @bind="editName" class="form-control mb-2" />
-                        <input @bind="editIngredients" class="form-control mb-2" />
-                        <textarea @bind="editInstructions" class="form-control" rows="4"></textarea>
-                    }
-                </div>
-                <div class="modal-footer">
-                    @if (!isEditMode)
-                    {
-                        <button class="btn btn-outline-danger me-auto" @onclick="Delete">Delete</button>
-                        <button class="btn btn-primary" @onclick="EnterEditMode">Edit</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-success" @onclick="Save">Save</button>
-                        <button class="btn btn-link" @onclick="() => isEditMode = false">Cancel</button>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
+@if (pick is not null)
+{
+	<div class="mask" @onclick="Close"></div>
+	<section class="modal" role="dialog" aria-modal="true">
+		<div class="modalhead">
+			<p>@(edit ? "edit" : pick.Name)</p>
+			<button class="icon" aria-label="close" @onclick="Close">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<line x1="18" y1="6" x2="6" y2="18" />
+					<line x1="6" y1="6" x2="18" y2="18" />
+				</svg>
+			</button>
+		</div>
+
+		<div class="modalbody">
+			@if (!edit)
+			{
+				<p class="key">ingredients</p>
+				<p class="copy">@string.Join(", ", pick.Ingredients)</p>
+				<p class="key">steps</p>
+				<p class="copy">@pick.Instructions</p>
+			}
+			else
+			{
+				<label class="field">
+					<span>name</span>
+					<input @bind="name" />
+				</label>
+				<label class="field">
+					<span>ingredients</span>
+					<input @bind="items" />
+				</label>
+				<label class="field">
+					<span>steps</span>
+					<textarea @bind="steps" rows="4"></textarea>
+				</label>
+			}
+		</div>
+
+		<div class="modalfoot">
+			@if (!edit)
+			{
+				@if (drop)
+				{
+					<button class="button danger" @onclick="Kill">confirm</button>
+					<button class="button" @onclick="Undo">cancel</button>
+				}
+				else
+				{
+					<button class="button danger" @onclick="Ask">delete</button>
+					<button class="button primary" @onclick="Start">edit</button>
+				}
+			}
+			else
+			{
+				<button class="button" @onclick="Stop">cancel</button>
+				<button class="button primary" @onclick="Save">save</button>
+			}
+		</div>
+	</section>
 }
 
 @code {
-    private string query = "";
-    private Recipe? selectedRecipe;
-    private bool isEditMode = false;
+	private string text = "";
+	private Recipe? pick;
+	private bool edit;
+	private bool drop;
+	private string name = "";
+	private string items = "";
+	private string steps = "";
 
-    private string editName = "";
-    private string editIngredients = "";
-    private string editInstructions = "";
+	private List<Recipe> list => Service.GetAll().Where(Match).ToList();
 
-    private void OpenRecipe(Recipe r)
-    {
-        selectedRecipe = r;
-        isEditMode = false;
-    }
+	private bool Match(Recipe item)
+	{
+		if (string.IsNullOrWhiteSpace(text))
+		{
+			return true;
+		}
 
-    private void EnterEditMode()
-    {
-        editName = selectedRecipe!.Name;
-        editIngredients = string.Join(", ", selectedRecipe.Ingredients);
-        editInstructions = selectedRecipe.Instructions;
-        isEditMode = true;
-    }
+		return item.Name.Contains(text, StringComparison.OrdinalIgnoreCase) || item.Ingredients.Any(x => x.Contains(text, StringComparison.OrdinalIgnoreCase));
+	}
 
-    private void Save()
-    {
-        var updated = new Recipe(editName, editIngredients.Split(',').Select(i => i.Trim()).ToList(), editInstructions);
-        Service.UpdateRecipe(selectedRecipe!, updated);
-        selectedRecipe = updated;
-        isEditMode = false;
-    }
+	private void Open(Recipe item)
+	{
+		pick = item;
+		edit = false;
+		drop = false;
+	}
 
-    private void Delete()
-    {
-        Service.DeleteRecipe(selectedRecipe!);
-        CloseRecipe();
-    }
+	private void Close()
+	{
+		pick = null;
+		edit = false;
+		drop = false;
+	}
 
-    private void CloseRecipe() => selectedRecipe = null;
+	private void Start()
+	{
+		if (pick is null)
+		{
+			return;
+		}
+
+		name = pick.Name;
+		items = string.Join(", ", pick.Ingredients);
+		steps = pick.Instructions;
+		edit = true;
+		drop = false;
+	}
+
+	private void Stop()
+	{
+		edit = false;
+		drop = false;
+	}
+
+	private void Save()
+	{
+		if (pick is null || string.IsNullOrWhiteSpace(name))
+		{
+			return;
+		}
+
+		var list = items.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
+		var item = new Recipe(name.Trim(), list, steps.Trim());
+		Service.UpdateRecipe(pick, item);
+		pick = item;
+		edit = false;
+		drop = false;
+	}
+
+	private void Ask()
+	{
+		drop = true;
+	}
+
+	private void Undo()
+	{
+		drop = false;
+	}
+
+	private void Kill()
+	{
+		if (pick is null)
+		{
+			return;
+		}
+
+		Service.DeleteRecipe(pick);
+		Close();
+	}
 }

@@ -1,173 +1,144 @@
-/* --- 1. THEME VARIABLE DEFINITIONS --- */
 :root {
-    /* Light Mode Variables */
-    --bg-main: #ffffff;
-    --bg-sidebar: #3a0647;
-    --bg-card: #ffffff;
-    --bg-input: #ffffff;
-    --text-main: #212529;
-    --text-muted: #6c757d;
-    --border-color: #dee2e6;
-    --nav-link-color: rgba(255, 255, 255, 0.7);
-    --nav-link-active: #ffffff;
-    --modal-blur: rgba(255, 255, 255, 0.3);
+	color-scheme: light;
+	--bg: #f3f5f8;
+	--panel: #ffffff;
+	--side: #ffffff;
+	--line: #dbe1ea;
+	--text: #151b28;
+	--mute: #5f6b82;
+	--accent: #0f766e;
+	--accenttext: #f7fffd;
+	--danger: #b42318;
+	--sidetext: #162236;
+	--sidemute: #607089;
+	--sideactive: #eef2f8;
 }
 
 .dark-mode {
-    /* Dark Mode Overrides */
-    --bg-main: #121212;
-    --bg-sidebar: #000000;
-    --bg-card: #1e1e1e;
-    --bg-input: #2d2d2d;
-    
-    /* Aggressive White Text for Dark Mode */
-    --text-main: #ffffff !important; 
-    --text-muted: #d1d1d1 !important;
-    
-    --border-color: #444444;
-    --nav-link-color: #ffffff;
-    --nav-link-active: #ffffff;
-    --modal-blur: rgba(0, 0, 0, 0.6);
+	color-scheme: dark;
+	--bg: #0f141d;
+	--panel: #161c27;
+	--side: #090e16;
+	--line: #2a3446;
+	--text: #edf2ff;
+	--mute: #9aa7bf;
+	--accent: #2dd4bf;
+	--accenttext: #082c2b;
+	--danger: #ff7666;
+	--sidetext: #edf2ff;
+	--sidemute: #95a4bf;
+	--sideactive: #1c2636;
 }
 
-/* --- 2. GLOBAL STYLES & PADDING --- */
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: var(--bg-main) !important;
-    color: var(--text-main) !important;
-    transition: background-color 0.3s ease, color 0.3s ease;
+* {
+	box-sizing: border-box;
 }
 
-/* Space between URL bar and content */
-.content {
-    padding-top: 3.5rem !important; 
-    padding-bottom: 2rem;
+html,
+body {
+	margin: 0;
+	padding: 0;
+	font-family: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
+	background: var(--bg);
+	color: var(--text);
 }
 
-.page {
-    background-color: var(--bg-main);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+	margin: 0;
 }
 
-/* --- 3. DARK MODE TEXT FIXES --- */
-/* This forces every possible text element to be white when .dark-mode is active */
-.dark-mode body, 
-.dark-mode .page,
-.dark-mode main,
-.dark-mode article,
-.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6,
-.dark-mode p, .dark-mode span, .dark-mode label, .dark-mode li, .dark-mode div:not(.sidebar) {
-    color: var(--text-main) !important;
+h1:focus,
+h2:focus,
+.title:focus {
+	outline: none;
 }
 
-/* Fix for input boxes (text color inside the box) */
-.dark-mode .form-control, 
-.dark-mode textarea, 
-.dark-mode input {
-    color: #ffffff !important;
-    background-color: var(--bg-input) !important;
+a {
+	color: inherit;
 }
 
-/* Fix for placeholder text hints */
-.dark-mode ::placeholder {
-    color: #a0a0a0 !important;
-    opacity: 1;
+.title {
+	font-size: 1.45rem;
+	font-weight: 800;
 }
 
-/* --- 4. SIDEBAR & NAVIGATION --- */
-.sidebar {
-    background-color: var(--bg-sidebar) !important;
-    background-image: none !important;
-}
-
-.nav-item a {
-    color: var(--nav-link-color) !important;
-}
-
-.nav-item a.active {
-    color: var(--nav-link-active) !important;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* --- 5. CARDS & CONTENT --- */
 .card {
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color) !important;
-    transition: transform 0.2s ease;
+	border: 1px solid var(--line);
+	border-radius: 16px;
+	padding: 1rem;
+	background: var(--panel);
 }
 
-.card:hover {
-    transform: translateY(-5px);
+.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	padding: 0.56rem 0.88rem;
+	border-radius: 11px;
+	border: 1px solid var(--line);
+	background: var(--panel);
+	color: var(--text);
+	font: inherit;
+	font-weight: 700;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.16s ease, border-color 0.16s ease;
 }
 
-/* --- 6. MODALS --- */
-.modal-content {
-    background-color: var(--bg-card) !important;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color) !important;
+.button:hover {
+	background: color-mix(in srgb, var(--panel) 78%, var(--line) 22%);
 }
 
-.modal-header, .modal-footer {
-    border-color: var(--border-color) !important;
+.button.primary {
+	background: var(--accent);
+	border-color: var(--accent);
+	color: var(--accenttext);
 }
 
-/* Flips the 'X' button to white in dark mode */
-.dark-mode .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
+.button.primary:hover {
+	background: color-mix(in srgb, var(--accent) 86%, black 14%);
+	border-color: color-mix(in srgb, var(--accent) 86%, black 14%);
 }
 
-.modal-backdrop-blur {
-    background-color: var(--modal-blur) !important;
-    backdrop-filter: blur(10px);
+.button.danger {
+	border-color: var(--danger);
+	color: var(--danger);
 }
 
-/* --- 7. MISC HELPERS --- */
-.text-muted {
-    color: var(--text-muted) !important;
+.button.danger:hover {
+	background: color-mix(in srgb, var(--danger) 12%, transparent);
 }
 
-hr {
-    border-top: 1px solid var(--border-color);
-    opacity: 0.5;
+input,
+textarea {
+	width: 100%;
+	padding: 0.62rem 0.72rem;
+	border: 1px solid var(--line);
+	border-radius: 11px;
+	background: var(--panel);
+	color: var(--text);
+	font: inherit;
 }
 
-/* Styling for Sidebar Icons */
-.nav-link .bi {
-    font-size: 1.25rem;
-    vertical-align: middle;
-    display: inline-block;
-    width: 1.5rem; /* Keeps text aligned even if icons vary in width */
+input:focus,
+textarea:focus {
+	outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+	outline-offset: 1px;
 }
 
-.dark-mode .nav-link .bi {
-    color: #ffffff !important;
+input::placeholder,
+textarea::placeholder {
+	color: var(--mute);
 }
 
-/* Give the active link icon a little extra glow */
-.nav-link.active .bi {
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
-}
-
-/* --- Sidebar Alignment Fixes --- */
-
-/* Forces icons and text to stay centered and spaced correctly */
-.nav-link {
-    display: flex !important;
-    align-items: center !important;
-    padding: 0.75rem 1rem !important;
-}
-
-/* Gives icons a fixed width so the text following them is perfectly aligned vertically */
-.nav-link i {
-    width: 1.5rem; 
-    display: inline-flex;
-    justify-content: center;
-    font-size: 1.2rem;
-    line-height: 1;
-}
-
-/* Ensures the text has a nice gap from the icon */
-.nav-link span {
-    margin-left: 0.5rem;
-    line-height: 1;
+textarea {
+	resize: vertical;
+	min-height: 110px;
 }
