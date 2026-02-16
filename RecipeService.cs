@@ -5,12 +5,11 @@ namespace RecipeWeb;
 public class RecipeService
 {
     private List<Recipe> _recipes = new();
-    // The file will be created in your project's root folder
     private readonly string _filePath = "recipes.json";
 
     public RecipeService()
     {
-        LoadFromFile(); // Load saved recipes as soon as the app starts
+        LoadFromFile();
     }
 
     public List<Recipe> GetAll() => _recipes;
@@ -55,7 +54,6 @@ public class RecipeService
         }
         else
         {
-            // If no file exists, start with a default recipe
             _recipes = new() { new Recipe("Classic Omelette", new() { "Eggs", "Cheese" }, "Fry it.") };
             SaveToFile();
         }
