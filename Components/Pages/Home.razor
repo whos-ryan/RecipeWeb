@@ -11,32 +11,32 @@
 }
 
 <section class="hero">
-	<h1>recipe manager</h1>
-	<p>all your meals in one place</p>
+	<h1>Recipe Manager</h1>
+	<p>All your meals in one place</p>
 	<div class="heroactions">
-		<button class="button primary" @onclick='() => Nav.NavigateTo("/add")'>add recipe</button>
-		<button class="button" @onclick='() => Nav.NavigateTo("/search")'>browse</button>
+		<button class="button primary" @onclick='() => Nav.NavigateTo("/add")'>Add Recipe</button>
+		<button class="button" @onclick='() => Nav.NavigateTo("/search")'>Browse</button>
 	</div>
 </section>
 
 <section class="homegrid">
 	<article class="card stat">
-		<p class="key">recipes</p>
+		<p class="key">Recipes</p>
 		<p class="num">@total</p>
 	</article>
 	<article class="card stat">
-		<p class="key">ingredients</p>
+		<p class="key">Ingredients</p>
 		<p class="num">@unique</p>
 	</article>
 	<article class="card stat">
-		<p class="key">month</p>
+		<p class="key">Month</p>
 		<p class="num">@month</p>
 	</article>
 </section>
 
 <section class="latest">
 	<div class="head">
-		<h2>latest</h2>
+		<h2>Latest</h2>
 	</div>
 	@if (last is not null)
 	{
@@ -49,7 +49,7 @@
 	{
 		<div class="card empty">
 			<p>empty</p>
-			<button class="button primary" @onclick='() => Nav.NavigateTo("/add")'>add</button>
+			<button class="button primary" @onclick='() => Nav.NavigateTo("/add")'>Add</button>
 		</div>
 	}
 </section>

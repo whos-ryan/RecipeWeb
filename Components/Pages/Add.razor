@@ -2,28 +2,28 @@
 @inject RecipeService Service
 @inject NavigationManager Nav
 
-<h1 class="title">add</h1>
+<h1 class="title">Add</h1>
 
 <section class="card form">
 	<label class="field">
-		<span>name</span>
+		<span>Name</span>
 		<input @bind="name" />
 	</label>
 	<label class="field">
-		<span>ingredients</span>
+		<span>Ingredients</span>
 		<input @bind="items" />
 	</label>
 	<label class="field">
-		<span>steps</span>
+		<span>Steps</span>
 		<textarea @bind="steps" rows="5"></textarea>
 	</label>
 	@if (warn)
 	{
-		<p class="warn">required</p>
+		<p class="warn">Required</p>
 	}
 	<div class="actions">
-		<button class="button" @onclick='() => Nav.NavigateTo("/")'>cancel</button>
-		<button class="button primary" @onclick="Save">save</button>
+		<button class="button" @onclick='() => Nav.NavigateTo("/")'>Cancel</button>
+		<button class="button primary" @onclick="Save">Save</button>
 	</div>
 </section>
 

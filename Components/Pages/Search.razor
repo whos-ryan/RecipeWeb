@@ -1,7 +1,7 @@
 @page "/search"
 @inject RecipeService Service
 
-<h1 class="title">search</h1>
+<h1 class="title">Search</h1>
 
 <div class="searchbar">
 	<input @bind="text" @bind:event="oninput" placeholder="find" />
@@ -11,7 +11,7 @@
 {
 	<div class="card searchempty">
 		<p>empty</p>
-		<a class="button primary" href="/add">add</a>
+		<a class="button primary" href="/add">Add</a>
 	</div>
 }
 else
@@ -44,23 +44,23 @@ else
 		<div class="modalbody">
 			@if (!edit)
 			{
-				<p class="key">ingredients</p>
+				<p class="key">Ingredients</p>
 				<p class="copy">@string.Join(", ", pick.Ingredients)</p>
-				<p class="key">steps</p>
+				<p class="key">Steps</p>
 				<p class="copy">@pick.Instructions</p>
 			}
 			else
 			{
 				<label class="field">
-					<span>name</span>
+					<span>Name</span>
 					<input @bind="name" />
 				</label>
 				<label class="field">
-					<span>ingredients</span>
+					<span>Ingredients</span>
 					<input @bind="items" />
 				</label>
 				<label class="field">
-					<span>steps</span>
+					<span>Steps</span>
 					<textarea @bind="steps" rows="4"></textarea>
 				</label>
 			}
@@ -71,19 +71,19 @@ else
 			{
 				@if (drop)
 				{
-					<button class="button danger" @onclick="Kill">confirm</button>
-					<button class="button" @onclick="Undo">cancel</button>
+					<button class="button danger" @onclick="Kill">Confirm</button>
+					<button class="button" @onclick="Undo">Cancel</button>
 				}
 				else
 				{
-					<button class="button danger" @onclick="Ask">delete</button>
-					<button class="button primary" @onclick="Start">edit</button>
+					<button class="button danger" @onclick="Ask">Delete</button>
+					<button class="button primary" @onclick="Start">Edit</button>
 				}
 			}
 			else
 			{
-				<button class="button" @onclick="Stop">cancel</button>
-				<button class="button primary" @onclick="Save">save</button>
+				<button class="button" @onclick="Stop">Cancel</button>
+				<button class="button primary" @onclick="Save">Save</button>
 			}
 		</div>
 	</section>
